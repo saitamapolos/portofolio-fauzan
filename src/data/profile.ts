@@ -88,6 +88,41 @@ export const softSkills = [
   "Adaptability",
 ];
 
+/* ============================================================
+   Projects — karya nyata yang bisa dicoba langsung
+   ============================================================ */
+
+export type Project = {
+  name: string;
+  tagline: string;
+  period: string;
+  description: string;
+  highlights: string[];
+  stack: string[];
+  demo?: string;
+  repo?: string;
+  featured?: boolean;
+};
+
+export const projects: Project[] = [
+  {
+    name: "Admin Olshop",
+    tagline: "Sistem admin toko online",
+    period: "2026",
+    description:
+      "Aplikasi web untuk mengelola produk, pesanan, dan laporan penjualan toko online. Dibuat karena banyak toko kecil masih mencatat pesanan secara manual, padahal pesanan datang dari beberapa marketplace sekaligus.",
+    highlights: [
+      "Stok hanya berubah lewat tiga jalur tercatat, sehingga angka stok tidak bisa diedit bebas dan tetap bisa dipercaya.",
+      "Pembuatan pesanan dan pengurangan stok dijalankan dalam satu transaksi database dengan row locking — mencegah stok minus saat dua admin memproses bersamaan.",
+      "Import pesanan dari CSV Shopee/TikTok Shop dengan pencocokan nama produk otomatis, karena nama di marketplace sering berbeda dari nama di database.",
+      "Export laporan ke file Excel dengan rumus hidup, dibuat tanpa library eksternal.",
+    ],
+    stack: ["HTML", "CSS", "JavaScript", "Supabase", "PostgreSQL"],
+    demo: "https://admin-olshop-seven.vercel.app",
+    featured: true,
+  },
+];
+
 export const hardSkills = [
   "Microsoft Office",
   "Analisis Data",

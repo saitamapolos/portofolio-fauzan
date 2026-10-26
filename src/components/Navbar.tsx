@@ -6,6 +6,7 @@ import { profile } from "@/data/profile";
 
 const links = [
   { href: "#tentang", label: "Tentang" },
+  { href: "#proyek", label: "Proyek" },
   { href: "#pengalaman", label: "Pengalaman" },
   { href: "#pendidikan", label: "Pendidikan" },
   { href: "#kontak", label: "Kontak" },
