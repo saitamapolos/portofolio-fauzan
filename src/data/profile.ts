@@ -118,7 +118,7 @@ export const projects: Project[] = [
       "Export laporan ke file Excel dengan rumus hidup, dibuat tanpa library eksternal.",
     ],
     stack: ["HTML", "CSS", "JavaScript", "Supabase", "PostgreSQL"],
-    demo: "https://admin-olshop-seven.vercel.app",
+    demo: "https://admin-olshop-hdiz.vercel.app",
     featured: true,
   },
 ];
