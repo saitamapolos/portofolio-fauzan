@@ -1,111 +1,76 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
-import { ArrowDown, Mail, MapPin, Phone } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { profile } from "@/data/profile";
-import Reveal from "./Reveal";
 
 export default function Hero() {
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 12;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * -12;
+    setTilt({ x, y });
+  };
+
   return (
-    <section id="top" className="relative overflow-hidden pt-16">
-      {/* ambient glow */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(600px 300px at 20% 0%, rgb(52 211 153 / 0.12), transparent 70%), radial-gradient(500px 280px at 85% 20%, rgb(56 189 248 / 0.08), transparent 70%)",
-        }}
-      />
-      <div className="relative mx-auto grid max-w-5xl items-start gap-10 px-5 pt-20 pb-16 sm:px-8 sm:pt-28 sm:pb-24 lg:grid-cols-[1fr_auto] lg:gap-14">
-        {/* Foto profil */}
-        <Reveal className="order-first lg:order-last lg:row-span-2 lg:mt-1">
-          <div className="relative mx-auto w-40 sm:w-48 lg:w-60">
-            <div
-              aria-hidden
-              className="absolute -inset-3 rounded-[2rem] bg-gradient-to-br from-emerald-400/25 via-sky-400/10 to-transparent blur-xl"
-            />
+    <section
+      id="top"
+      className="relative flex min-h-screen flex-col justify-between px-6 pt-28 pb-12 sm:px-12 lg:px-20 lg:pt-32 lg:pb-16"
+    >
+      {/* Top-left giant display heading */}
+      <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+        <h1 className="font-headers text-[clamp(4.2rem,19vw,15.5rem)] font-bold leading-[0.88] tracking-tighter text-foreground select-none">
+          Halo,
+        </h1>
+
+        {/* Interactive 3D tilt portrait & location badge */}
+        <div
+          onMouseMove={handleMove}
+          onMouseLeave={() => setTilt({ x: 0, y: 0 })}
+          style={{
+            transform: `perspective(700px) rotateX(${tilt.y}deg) rotateY(${tilt.x}deg)`,
+          }}
+          className="flex items-center gap-4 self-start rounded-2xl border border-border bg-secondary/40 p-3 pr-5 backdrop-blur-sm transition-transform duration-200 ease-out shadow-sm"
+        >
+          <div className="relative h-14 w-14 overflow-hidden rounded-xl border border-border shrink-0">
             <Image
               src="/foto_fauzan.jpeg"
-              alt="Foto Fauzan Naufal Anbia"
-              width={1148}
-              height={1552}
+              alt={profile.name}
+              width={200}
+              height={260}
               priority
-              sizes="(max-width: 640px) 160px, (max-width: 1024px) 192px, 240px"
-              className="relative aspect-[3/4] w-full rounded-3xl border border-white/10 object-cover object-top shadow-2xl shadow-black/40 grayscale transition duration-700 hover:grayscale-0"
+              className="h-full w-full object-cover object-top grayscale transition-all duration-500 hover:grayscale-0 hover:scale-105"
             />
           </div>
-        </Reveal>
-
-        <div className="lg:order-first">
-        <Reveal>
-          <p className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-zinc-300">
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-            </span>
-            {profile.location}
-          </p>
-        </Reveal>
-
-        <Reveal delay={100}>
-          <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-zinc-50 sm:text-6xl">
-            Halo, saya
-            <br />
-            <span className="bg-gradient-to-r from-emerald-300 via-emerald-400 to-sky-400 bg-clip-text text-transparent">
-              {profile.name}
-            </span>
-          </h1>
-        </Reveal>
-
-        <Reveal delay={200}>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-zinc-400">
-            {profile.tagline}
-          </p>
-        </Reveal>
-
-        <Reveal delay={300}>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a
-              href="#kontak"
-              className="inline-flex items-center gap-2 rounded-full bg-emerald-400 px-6 py-3 text-sm font-semibold text-zinc-950 transition-colors hover:bg-emerald-300"
-            >
-              <Mail size={16} />
-              Hubungi Saya
-            </a>
-            <a
-              href="#pengalaman"
-              className="inline-flex items-center gap-2 rounded-full border border-white/15 px-6 py-3 text-sm font-semibold text-zinc-100 transition-colors hover:border-white/30 hover:bg-white/5"
-            >
-              Lihat Pengalaman
-              <ArrowDown size={16} />
-            </a>
+          <div className="text-xs space-y-1">
+            <p className="font-semibold text-foreground">{profile.name}</p>
+            <p className="flex items-center gap-1.5 text-muted-foreground">
+              <MapPin size={11} className="text-primary shrink-0" />
+              <span>{profile.location}</span>
+            </p>
+            <p className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-primary">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+              Available for Work
+            </p>
           </div>
-        </Reveal>
-
-        <Reveal delay={400}>
-          <div className="mt-10 flex flex-wrap gap-x-6 gap-y-2 text-sm text-zinc-400">
-            <span className="inline-flex items-center gap-2">
-              <MapPin size={15} className="text-emerald-400" />
-              {profile.location}
-            </span>
-            <a
-              href={`mailto:${profile.email}`}
-              className="inline-flex items-center gap-2 transition-colors hover:text-zinc-100"
-            >
-              <Mail size={15} className="text-emerald-400" />
-              {profile.email}
-            </a>
-            <a
-              href={profile.phoneHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 transition-colors hover:text-zinc-100"
-            >
-              <Phone size={15} className="text-emerald-400" />
-              {profile.phone}
-            </a>
-          </div>
-        </Reveal>
         </div>
+      </div>
+
+      {/* Bottom-right giant display heading + highlighted sub-headline */}
+      <div className="mt-12 flex flex-col items-end text-right">
+        <p className="mb-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:text-xl">
+          Lulusan <span className="highlight-pill">S1 Teknik Informatika</span> yang mengubah ide
+          mentah dan kebutuhan operasional menjadi{" "}
+          <span className="highlight-pill">sistem web</span> &amp;{" "}
+          <span className="highlight-pill">solusi digital</span> yang benar-benar jalan.
+        </p>
+
+        <h2 className="font-headers text-[clamp(4.2rem,16vw,13.5rem)] font-bold leading-[0.88] tracking-tighter text-foreground select-none">
+          I&apos;m {profile.shortName}
+        </h2>
       </div>
     </section>
   );

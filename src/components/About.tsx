@@ -1,84 +1,44 @@
-import { GraduationCap, Heart, Sparkles, Wrench } from "lucide-react";
-import { hardSkills, interests, softSkills } from "@/data/profile";
-import Reveal from "./Reveal";
-import SectionHeading from "./SectionHeading";
-
-function SkillGroup({
-  icon: Icon,
-  title,
-  items,
-}: {
-  icon: typeof Wrench;
-  title: string;
-  items: string[];
-}) {
-  return (
-    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-      <h3 className="flex items-center gap-2 text-sm font-semibold tracking-wide text-zinc-200">
-        <Icon size={16} className="text-emerald-400" />
-        {title}
-      </h3>
-      <div className="mt-4 flex flex-wrap gap-2">
-        {items.map((s) => (
-          <span
-            key={s}
-            className="rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-zinc-300"
-          >
-            {s}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export default function About() {
   return (
-    <section id="tentang" className="scroll-mt-20 border-t border-white/5">
-      <div className="mx-auto max-w-5xl px-5 py-20 sm:px-8 sm:py-24">
-        <SectionHeading
-          eyebrow="Tentang"
-          title="Tentang Saya"
-          description="Saya Fauzan Naufal Anbia — berlatar pendidikan S1 Teknik Informatika dengan pengalaman praktis di operasional usaha, layanan pelanggan, dan konten digital. Terbiasa bekerja langsung dengan pelanggan dan beradaptasi cepat di lingkungan baru."
-        />
-
-        <div className="mt-10 grid gap-4 md:grid-cols-2">
-          <Reveal delay={100}>
-            <SkillGroup icon={Sparkles} title="Soft Skills" items={softSkills} />
-          </Reveal>
-          <Reveal delay={200}>
-            <SkillGroup icon={Wrench} title="Hard Skills" items={hardSkills} />
-          </Reveal>
+    <section
+      id="what-i-do"
+      className="relative flex min-h-screen flex-col justify-center px-6 py-24 sm:px-12 lg:px-20"
+    >
+      <div className="mx-auto grid w-full max-w-7xl gap-12 lg:grid-cols-12 lg:items-end">
+        <div className="lg:col-span-5">
+          <p className="font-mono text-xs uppercase tracking-[0.25em] text-primary">
+            01 / Introduction
+          </p>
+          <h2 className="mt-4 font-headers text-[clamp(3.2rem,9vw,7.5rem)] font-bold leading-[0.9] tracking-tight text-muted-foreground/35">
+            WHAT
+            <br />
+            I DO?
+          </h2>
         </div>
 
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <Reveal delay={100}>
-            <div className="flex h-full items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-              <span className="rounded-xl bg-emerald-400/10 p-2.5">
-                <GraduationCap size={20} className="text-emerald-400" />
-              </span>
-              <div>
-                <h3 className="font-semibold text-zinc-100">Pendidikan</h3>
-                <p className="mt-1 text-sm leading-relaxed text-zinc-400">
-                  S1 Teknik Informatika, Universitas Perjuangan Tasikmalaya
-                  (2022–2026).
-                </p>
-              </div>
-            </div>
-          </Reveal>
-          <Reveal delay={200}>
-            <div className="flex h-full items-start gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-6">
-              <span className="rounded-xl bg-emerald-400/10 p-2.5">
-                <Heart size={20} className="text-emerald-400" />
-              </span>
-              <div>
-                <h3 className="font-semibold text-zinc-100">Minat</h3>
-                <p className="mt-1 text-sm leading-relaxed text-zinc-400">
-                  {interests.join(" · ")}.
-                </p>
-              </div>
-            </div>
-          </Reveal>
+        <div className="lg:col-span-7 lg:text-right">
+          <p className="text-lg leading-relaxed text-foreground/90 sm:text-xl lg:text-2xl">
+            Saya seorang <span className="highlight-pill">digital builder</span> dari Tasikmalaya
+            yang menggabungkan latar belakang Teknik Informatika dengan pengalaman langsung di
+            operasional retail, layanan digital, dan produksi konten.
+          </p>
+
+          <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg lg:text-xl">
+            Saya peduli bagaimana sebuah sistem bekerja di balik layar sama besarnya dengan
+            tampilannya — menjaga kerapian alur data, kecepatan eksekusi dengan AI-assisted
+            workflow, dan memastikan apa yang dibangun bukan sekadar konsep, tapi benar-benar{" "}
+            <span className="highlight-pill-solid">siap pakai.</span>
+          </p>
+
+          <div className="mt-10 flex lg:justify-end">
+            <a
+              href="#showcase"
+              className="inline-flex items-center gap-3 rounded-full border border-border bg-secondary/60 px-6 py-3 text-sm font-medium text-foreground transition-all hover:border-primary hover:bg-primary hover:text-primary-foreground"
+            >
+              <span className="h-2 w-2 rounded-full bg-current" />
+              How I Got Here 👇
+            </a>
+          </div>
         </div>
       </div>
     </section>

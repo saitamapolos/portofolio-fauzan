@@ -1,68 +1,70 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-/**
- * Cahaya lembut yang mengikuti posisi kursor.
- * Di layar kecil (<1024px) otomatis nonaktif karena tidak ada kursor.
- * Menghormati preferensi "reduced motion" pengguna.
- */
 export default function CursorGlow() {
-  const glowRef = useRef<HTMLDivElement>(null);
-  const frame = useRef(0);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const [label, setLabel] = useState<string | null>(null);
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    const el = glowRef.current;
-    if (!el) return;
+    const isFine = window.matchMedia("(pointer: fine)").matches;
+    if (!isFine) return;
 
-    // Hanya aktif di layar lebar (butuh kursor).
-    // Catatan: sengaja TIDAK dimatikan oleh "prefers-reduced-motion" —
-    // efek ini tidak menggerakkan konten, hanya lapisan cahaya pasif.
-    if (window.innerWidth < 1024) return;
-
-    let x = -999;
-    let y = -999;
-
-    // Tampilkan langsung di tengah layar supaya efeknya terlihat
-    // sejak sebelum kursor digerakkan.
-    x = window.innerWidth / 2;
-    y = window.innerHeight / 3;
-
-    const paint = () => {
-      frame.current = 0;
-      el.style.background = `radial-gradient(600px circle at ${x}px ${y}px, rgba(52, 211, 153, 0.12), transparent 70%)`;
-    };
-
-    paint();
-    el.style.opacity = "1";
+    let mouseX = -100;
+    let mouseY = -100;
+    let currentX = -100;
+    let currentY = -100;
+    let rafId = 0;
 
     const onMove = (e: MouseEvent) => {
-      x = e.clientX;
-      y = e.clientY;
-      el.style.opacity = "1";
-      // Batasi maksimal 1 kali gambar per frame
-      if (!frame.current) frame.current = requestAnimationFrame(paint);
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+
+      const target = e.target as HTMLElement | null;
+      const dragEl = target?.closest("[data-cursor-label]");
+      if (dragEl) {
+        setLabel(dragEl.getAttribute("data-cursor-label"));
+        setHovered(true);
+        return;
+      }
+
+      const interactive = target?.closest("a, button, [role='button']");
+      setLabel(null);
+      setHovered(Boolean(interactive));
     };
 
-    const onLeave = () => {
-      el.style.opacity = "0";
+    const tick = () => {
+      currentX += (mouseX - currentX) * 0.22;
+      currentY += (mouseY - currentY) * 0.22;
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) translate(-50%, -50%)`;
+      }
+      rafId = requestAnimationFrame(tick);
     };
 
     window.addEventListener("mousemove", onMove, { passive: true });
-    document.addEventListener("mouseleave", onLeave);
+    rafId = requestAnimationFrame(tick);
 
     return () => {
       window.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseleave", onLeave);
-      if (frame.current) cancelAnimationFrame(frame.current);
+      cancelAnimationFrame(rafId);
     };
   }, []);
 
   return (
     <div
-      ref={glowRef}
+      ref={dotRef}
       aria-hidden
-      className="pointer-events-none fixed inset-0 z-30 opacity-0 transition-opacity duration-500"
-    />
+      className={`pointer-events-none fixed top-0 left-0 z-[90] hidden md:flex items-center justify-center rounded-full bg-primary text-primary-foreground transition-[width,height,opacity] duration-200 ${
+        label
+          ? "h-16 w-16 text-[10px] font-mono font-bold uppercase tracking-wider shadow-lg"
+          : hovered
+          ? "h-9 w-9 opacity-80 mix-blend-difference"
+          : "h-5 w-5 opacity-90"
+      }`}
+    >
+      {label ?? null}
+    </div>
   );
 }
