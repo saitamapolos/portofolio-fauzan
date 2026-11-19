@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { techArsenal } from "@/data/profile";
 
 function TechIcon({ id, color }: { id: string; color: string }) {
@@ -135,27 +135,54 @@ function TechIcon({ id, color }: { id: string; color: string }) {
 }
 
 export default function TechArsenal() {
-  const [offset, setOffset] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const offsetRef = useRef(0);
+  const velocityRef = useRef(-0.65);
   const draggingRef = useRef(false);
   const lastXRef = useRef(0);
-  const velocityRef = useRef(-0.55);
-  const rafRef = useRef(0);
 
   useEffect(() => {
+    const itemWidth = 148;
+    const totalWidth = techArsenal.length * itemWidth;
+    let rafId = 0;
+
     const loop = () => {
       if (!draggingRef.current) {
-        setOffset((prev) => prev + velocityRef.current);
-        velocityRef.current += (-0.55 - velocityRef.current) * 0.04;
+        offsetRef.current += velocityRef.current;
+        velocityRef.current += (-0.65 - velocityRef.current) * 0.04;
       }
-      rafRef.current = requestAnimationFrame(loop);
+
+      const containerWidth = containerRef.current?.clientWidth || 1000;
+      const halfContainer = containerWidth / 2;
+      const curveDivisor = Math.max(360, halfContainer * 0.85);
+
+      techArsenal.forEach((_, idx) => {
+        const card = cardRefs.current[idx];
+        if (!card) return;
+
+        // Exact positive modulo wrap into [-totalWidth/2, totalWidth/2]
+        const mod = (((idx * itemWidth + offsetRef.current) % totalWidth) + totalWidth) % totalWidth;
+        const wrapped = mod > totalWidth / 2 ? mod - totalWidth : mod;
+
+        const normalized = wrapped / curveDivisor;
+        const curveY = Math.min(46, normalized * normalized * 24);
+        const rotate = Math.max(-10, Math.min(10, normalized * 5));
+
+        card.style.transform = `translate3d(${halfContainer + wrapped - 62}px, ${24 + curveY}px, 0) rotate(${rotate}deg)`;
+      });
+
+      rafId = requestAnimationFrame(loop);
     };
-    rafRef.current = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(rafRef.current);
+
+    rafId = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     draggingRef.current = true;
     lastXRef.current = e.clientX;
+    e.currentTarget.setPointerCapture(e.pointerId);
   };
 
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -163,73 +190,58 @@ export default function TechArsenal() {
     const dx = e.clientX - lastXRef.current;
     lastXRef.current = e.clientX;
     velocityRef.current = dx * 0.45;
-    setOffset((prev) => prev + dx);
+    offsetRef.current += dx;
   };
 
   const onPointerUp = () => {
     draggingRef.current = false;
   };
 
-  const itemWidth = 150;
-  const totalWidth = techArsenal.length * itemWidth;
-
   return (
-    <section className="relative overflow-hidden py-28 sm:py-36">
+    <section className="relative overflow-hidden py-24 sm:py-32">
       <div className="mx-auto max-w-7xl px-6 text-center sm:px-12">
         <h2 className="font-headers text-[clamp(3rem,10vw,8.5rem)] font-bold leading-[0.92] tracking-tighter text-foreground">
           Tech &amp; Tools
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-base text-muted-foreground sm:text-lg">
-          Tools yang saya pakai, eksplorasi, dan andalkan untuk membangun sistem &amp; konten.
+          Tools yang saya pelajari, eksplorasi, dan andalkan untuk membangun sistem &amp; konten.
         </p>
       </div>
 
-      {/* Interactive Draggable Curved Ribbon */}
+      {/* Interactive Draggable Curved Ribbon (DOM-direct RAF, zero wrap-fly glitch) */}
       <div
+        ref={containerRef}
         data-cursor-label="DRAG"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        onPointerLeave={onPointerUp}
-        className="relative mt-14 h-56 w-full cursor-grab active:cursor-grabbing select-none overflow-hidden touch-pan-y"
+        onPointerCancel={onPointerUp}
+        className="relative mt-14 h-60 w-full cursor-grab active:cursor-grabbing select-none overflow-hidden touch-pan-y"
       >
-        <div className="relative mx-auto h-full max-w-[1600px]">
-          {techArsenal.map((item, idx) => {
-            const raw = (idx * itemWidth + offset) % totalWidth;
-            const wrapped =
-              raw < -totalWidth / 2
-                ? raw + totalWidth
-                : raw > totalWidth / 2
-                ? raw - totalWidth
-                : raw;
-            const normalized = wrapped / 650;
-            const curveY = Math.min(58, normalized * normalized * 28);
-            const rotate = normalized * 6;
-
-            return (
-              <div
-                key={item.id}
-                style={{
-                  transform: `translate3d(calc(50vw + ${wrapped}px - 62px), ${28 + curveY}px, 0) rotate(${rotate}deg)`,
-                }}
-                className="group absolute top-0 left-0 flex w-[124px] flex-col items-center gap-2.5 rounded-2xl border border-border bg-background/90 p-4 shadow-md backdrop-blur-sm transition-all duration-150 hover:-translate-y-1.5 hover:border-primary"
+        {techArsenal.map((item, idx) => (
+          <div
+            key={item.id}
+            ref={(el) => {
+              cardRefs.current[idx] = el;
+            }}
+            className="group absolute top-0 left-0 w-[124px] will-change-transform"
+          >
+            <div className="flex flex-col items-center gap-2.5 rounded-2xl border border-border bg-background/90 p-4 shadow-md backdrop-blur-sm transition-colors duration-200 group-hover:border-primary group-hover:-translate-y-1">
+              <span
+                className="flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110"
+                style={{ backgroundColor: `${item.color}18` }}
               >
-                <span
-                  className="flex h-12 w-12 items-center justify-center rounded-xl transition-transform duration-200 group-hover:scale-110"
-                  style={{ backgroundColor: `${item.color}18` }}
-                >
-                  <TechIcon id={item.id} color={item.color} />
-                </span>
-                <span className="text-xs font-semibold text-foreground whitespace-nowrap">
-                  {item.name}
-                </span>
-                <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
-                  {item.category}
-                </span>
-              </div>
-            );
-          })}
-        </div>
+                <TechIcon id={item.id} color={item.color} />
+              </span>
+              <span className="text-xs font-semibold text-foreground whitespace-nowrap">
+                {item.name}
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                {item.category}
+              </span>
+            </div>
+          </div>
+        ))}
       </div>
 
       <p className="mt-4 text-center font-mono text-xs tracking-wider text-muted-foreground">
