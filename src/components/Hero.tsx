@@ -62,7 +62,8 @@ export default function Hero() {
       {/* Bottom-right giant display heading + highlighted sub-headline */}
       <div className="mt-12 flex flex-col items-end text-right">
         <p className="mb-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:text-xl">
-          Lulusan <span className="highlight-pill">S1 Teknik Informatika</span> yang mengubah ide
+          Lulusan <span className="highlight-pill">S1 Teknik Informatika</span> &amp;{" "}
+          <span className="highlight-pill">IT Support</span> yang mengubah ide
           mentah dan kebutuhan operasional menjadi{" "}
           <span className="highlight-pill">sistem web</span> &amp;{" "}
           <span className="highlight-pill">solusi digital</span> yang benar-benar jalan.

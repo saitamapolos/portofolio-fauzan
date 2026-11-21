@@ -2,11 +2,108 @@
 
 import { useState } from "react";
 import { ArrowUpRight, Check, CheckCircle2, Copy, MessageCircle, Sparkles } from "lucide-react";
-import { profile, projects } from "@/data/profile";
+import { profile, projects, Project } from "@/data/profile";
+
+const PROJECT_TABS: Record<string, string[]> = {
+  DeskOps: ["QR Quick-Ticket", "Asset & QR Label", "Toolkit Hub", "Laporan CSV/PDF"],
+  "Admin Olshop": ["3-Jalur Stok", "Row Locking DB", "CSV Auto-Match", "Excel Rumus Hidup"],
+};
+
+function ProjectShowcaseCard({ project }: { project: Project }) {
+  const [selectedHighlight, setSelectedHighlight] = useState(0);
+  const tabLabels =
+    PROJECT_TABS[project.name] ||
+    project.highlights.map((_, idx) => `Fitur ${idx + 1}`);
+  const hostLabel = project.demo
+    ? project.demo.replace(/^https?:\/\//, "").replace(/\/$/, "")
+    : project.name.toLowerCase().replace(/\s+/g, "-");
+
+  return (
+    <div className="group rounded-3xl border border-border bg-secondary/30 p-6 sm:p-8 transition-all duration-300 hover:border-primary/60">
+      <div className="overflow-hidden rounded-2xl border border-border bg-background shadow-md">
+        <div className="flex items-center justify-between border-b border-border bg-secondary/50 px-4 py-2.5">
+          <div className="flex items-center gap-1.5">
+            <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+          </div>
+          <span className="font-mono text-[11px] text-muted-foreground truncate max-w-[220px] sm:max-w-none">
+            {hostLabel}
+          </span>
+          <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-primary">
+            LIVE
+          </span>
+        </div>
+
+        <div className="p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-wider text-primary">
+                {project.tagline} · {project.period}
+              </p>
+              <h3 className="mt-1 font-headers text-2xl sm:text-3xl font-bold text-foreground">
+                {project.name}
+              </h3>
+            </div>
+            {project.demo && (
+              <a
+                href={project.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-transform hover:scale-105"
+              >
+                Buka Live App
+                <ArrowUpRight size={14} />
+              </a>
+            )}
+          </div>
+
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
+            {project.description}
+          </p>
+
+          <div className="mt-6">
+            <div className="flex flex-wrap gap-2">
+              {tabLabels.map((tab, idx) => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => setSelectedHighlight(idx)}
+                  className={`rounded-full px-3.5 py-1.5 font-mono text-xs transition-all ${
+                    selectedHighlight === idx
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "border border-border bg-secondary/50 text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-3 rounded-2xl border border-border bg-secondary/30 p-4 text-sm text-foreground flex items-start gap-3">
+              <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-primary" />
+              <p className="leading-relaxed">
+                {project.highlights[selectedHighlight]}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-5 flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">
+        {project.stack.map((tech, i) => (
+          <span key={tech} className="inline-flex items-center gap-2">
+            <span className="font-semibold text-foreground">{tech}</span>
+            {i < project.stack.length - 1 && <span className="text-primary">✦</span>}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Projects() {
   const mainProject = projects[0];
-  const [selectedHighlight, setSelectedHighlight] = useState(0);
   const [copied, setCopied] = useState(false);
 
   const copyEmail = () => {
@@ -40,96 +137,14 @@ export default function Projects() {
           )}
         </div>
 
-        {/* 2-Column Interactive Project Showcase */}
         <div className="mt-14 grid gap-8 lg:grid-cols-12">
-          {/* Featured Project Card (Admin Olshop) */}
-          <div className="lg:col-span-8 group rounded-3xl border border-border bg-secondary/30 p-6 sm:p-8 transition-all duration-300 hover:border-primary/60">
-            {/* Interactive Browser Mockup Header */}
-            <div className="overflow-hidden rounded-2xl border border-border bg-background shadow-md">
-              <div className="flex items-center justify-between border-b border-border bg-secondary/50 px-4 py-2.5">
-                <div className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                </div>
-                <span className="font-mono text-[11px] text-muted-foreground truncate max-w-[220px] sm:max-w-none">
-                  admin-olshop-hdiz.vercel.app
-                </span>
-                <span className="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-primary">
-                  LIVE
-                </span>
-              </div>
-
-              {/* Simulated Interactive App Preview */}
-              <div className="p-5 sm:p-6">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <p className="font-mono text-[11px] uppercase tracking-wider text-primary">
-                      {mainProject.tagline} · {mainProject.period}
-                    </p>
-                    <h3 className="mt-1 font-headers text-2xl sm:text-3xl font-bold text-foreground">
-                      {mainProject.name}
-                    </h3>
-                  </div>
-                  {mainProject.demo && (
-                    <a
-                      href={mainProject.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-transform hover:scale-105"
-                    >
-                      Buka Live App
-                      <ArrowUpRight size={14} />
-                    </a>
-                  )}
-                </div>
-
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-base">
-                  {mainProject.description}
-                </p>
-
-                {/* Interactive Feature Tabs */}
-                <div className="mt-6">
-                  <div className="flex flex-wrap gap-2">
-                    {["3-Jalur Stok", "Row Locking DB", "CSV Auto-Match", "Excel Rumus Hidup"].map(
-                      (tab, idx) => (
-                        <button
-                          key={tab}
-                          type="button"
-                          onClick={() => setSelectedHighlight(idx)}
-                          className={`rounded-full px-3.5 py-1.5 font-mono text-xs transition-all ${
-                            selectedHighlight === idx
-                              ? "bg-primary text-primary-foreground shadow-sm"
-                              : "border border-border bg-secondary/50 text-muted-foreground hover:text-foreground"
-                          }`}
-                        >
-                          {tab}
-                        </button>
-                      )
-                    )}
-                  </div>
-
-                  <div className="mt-3 rounded-2xl border border-border bg-secondary/30 p-4 text-sm text-foreground flex items-start gap-3">
-                    <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-primary" />
-                    <p className="leading-relaxed">{mainProject.highlights[selectedHighlight]}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Tech Stack Strip */}
-            <div className="mt-5 flex flex-wrap items-center gap-2 font-mono text-xs text-muted-foreground">
-              {mainProject.stack.map((tech, i) => (
-                <span key={tech} className="inline-flex items-center gap-2">
-                  <span className="font-semibold text-foreground">{tech}</span>
-                  {i < mainProject.stack.length - 1 && <span className="text-primary">✦</span>}
-                </span>
-              ))}
-            </div>
+          <div className="lg:col-span-8 space-y-8">
+            {projects.map((project) => (
+              <ProjectShowcaseCard key={project.name} project={project} />
+            ))}
           </div>
 
-          {/* Secondary Card — Direct Collaboration & Digital Services */}
-          <div className="lg:col-span-4 flex flex-col justify-between rounded-3xl border border-border bg-secondary/30 p-7 transition-all duration-300 hover:border-primary/60">
+          <div className="lg:col-span-4 flex flex-col justify-between self-start rounded-3xl border border-border bg-secondary/30 p-7 transition-all duration-300 hover:border-primary/60 lg:sticky lg:top-28">
             <div>
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                 <Sparkles size={22} />
@@ -138,10 +153,10 @@ export default function Projects() {
                 Collaboration
               </p>
               <h3 className="mt-2 font-headers text-3xl font-bold tracking-tight text-foreground">
-                Butuh Solusi Web atau Konten Digital?
+                Butuh Solusi IT Support atau Sistem Web?
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                Terbuka untuk peluang kerja full-time, freelance operasional digital, admin
+                Terbuka untuk peluang kerja full-time IT Support, operasional digital, admin
                 marketplace, maupun pembuatan sistem web praktis berbasis kebutuhan bisnis.
               </p>
             </div>

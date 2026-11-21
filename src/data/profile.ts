@@ -1,9 +1,9 @@
 export const profile = {
   name: "Fauzan Naufal Anbia",
   shortName: "Fauzan",
-  role: "S1 Teknik Informatika",
+  role: "S1 Teknik Informatika & IT Support",
   tagline:
-    "Lulusan S1 Teknik Informatika, Universitas Perjuangan Tasikmalaya — berpengalaman di operasional retail, layanan digital, dan pembuatan konten.",
+    "Lulusan S1 Teknik Informatika, Universitas Perjuangan Tasikmalaya — berpengalaman di IT Support, operasional retail, layanan digital, dan pembuatan konten.",
   location: "Tasikmalaya, Jawa Barat",
   country: "Indonesia",
   address:
@@ -129,6 +129,9 @@ export const softSkills = [
 ];
 
 export const hardSkills = [
+  "IT Support & Troubleshooting",
+  "Hardware, Printer & Jaringan LAN/Wi-Fi",
+  "Windows Automation (PowerShell & Batch)",
   "Microsoft Office",
   "Analisis Data",
   "Manajemen Media Sosial",
@@ -158,6 +161,22 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    name: "DeskOps",
+    tagline: "Internal IT Helpdesk, Asset Inventory & Support Toolkit",
+    period: "2026",
+    description:
+      "Portal terpusat untuk operasional IT Support kantor: karyawan scan stiker QR pada PC/printer untuk lapor kendala dalam < 30 detik tanpa login, teknisi kelola antrean tiket & inventaris aset, plus bundel script otomasi lapangan.",
+    highlights: [
+      "Portal pelaporan publik berbasis QR Code (?asset=KODE) dengan auto-fill perangkat & pelacakan status tiket real-time (Open → In Progress → Resolved).",
+      "Inventaris aset perangkat keras (PC, Laptop, Printer, Network) lengkap dengan status kesehatan, riwayat servis, dan generator stiker QR siap cetak.",
+      "Built-in IT Support Toolkit Hub berisi script PowerShell/Batch siap pakai (Fix Print Spooler, Reset DNS/Winsock, Winget PC Provisioning, IT Health Check).",
+      "Rekap laporan bulanan kinerja IT (MTTR, Top 3 masalah) dengan export CSV dan cetak PDF sekali klik.",
+    ],
+    stack: ["Next.js", "TypeScript", "Tailwind CSS", "Supabase", "PowerShell"],
+    demo: "https://deskops-biaabritania.vercel.app",
+    featured: true,
+  },
+  {
     name: "Admin Olshop",
     tagline: "Sistem admin toko online",
     period: "2026",
@@ -176,6 +195,13 @@ export const projects: Project[] = [
 ];
 
 export const showcaseSlides = [
+  {
+    id: "it-support",
+    title: "IT Support & Troubleshooting",
+    subtitle: "00 / FIELD OPS",
+    description:
+      "Menangani diagnostik hardware/software, jaringan LAN/Wi-Fi, reset Print Spooler, provisioning PC baru via PowerShell/Winget, hingga membangun sistem helpdesk internal (DeskOps).",
+  },
   {
     id: "web-dev",
     title: "Web & App Development",
