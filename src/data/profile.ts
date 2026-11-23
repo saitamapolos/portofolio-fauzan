@@ -58,6 +58,9 @@ export const experiences: Experience[] = [
       "Menangani langsung kebutuhan layanan digital pelanggan dengan respon cepat dan komunikasi jelas.",
       "Mengatur alur operasional harian, pencatatan transaksi, serta strategi pemasaran digital secara mandiri.",
       "Memanfaatkan tools AI dan automasi ringan untuk menjaga efisiensi layanan.",
+      "Melakukan instalasi, konfigurasi, dan pemeliharaan aplikasi khusus (APK) serta modul script automasi agar berjalan stabil sesuai kebutuhan operasional.",
+      "Menganalisis kebutuhan spesifikasi perangkat (hardware/device), mengatur alokasi performa, dan melakukan troubleshooting ketika terjadi crash, lag, atau error sistem.",
+      "Mengelola dan mengoptimalkan stabilitas koneksi jaringan selama operasional berlangsung untuk meminimalkan downtime dan gangguan latensi.",
     ],
   },
   {
